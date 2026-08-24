@@ -1,15 +1,17 @@
 # sweep-external-sdk
 
-TypeScript SDK for the Sweep External API: signed backend client, webhook
-verification and browser wallet execution helpers. Zero runtime dependencies.
+TypeScript SDK for the
+[Sweep External API](https://docs.trysweep.finance): signed backend client,
+webhook verification and browser wallet execution helpers. Zero runtime
+dependencies.
 
 ```bash
 npm install sweep-external-sdk
 ```
 
-Access to the API requires partner registration — see the docs' *Become an
-integrator* page for credentials (`SWEEP_API_URL`, `SWEEP_PARTNER_ID`,
-`SWEEP_PARTNER_SECRET`).
+Access to the API requires partner registration — see
+[Become an integrator](https://docs.trysweep.finance/become-an-integrator) for
+credentials (`SWEEP_API_URL`, `SWEEP_PARTNER_ID`, `SWEEP_PARTNER_SECRET`).
 
 ## Entry points
 
@@ -106,6 +108,11 @@ const totalRaw = sumSettledTargetRaw(status.settledOutputs, {
 Auto-spend the total only when every included output has `amountBasis:
 "actual"`; resolve and confirm `estimated` amounts against the recipient's
 balance.
+
+## Documentation
+
+Full API reference, request/response examples, error and retry semantics:
+[docs.trysweep.finance](https://docs.trysweep.finance).
 
 ## Development
 

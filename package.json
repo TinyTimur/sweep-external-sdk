@@ -1,11 +1,15 @@
 {
   "name": "sweep-external-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official TypeScript SDK for the Sweep External API: signed backend client, webhook verification and browser wallet execution helpers",
   "license": "MIT",
+  "homepage": "https://docs.trysweep.finance",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TinyTimur/sweep-external-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TinyTimur/sweep-external-sdk/issues"
   },
   "type": "module",
   "sideEffects": false,
