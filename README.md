@@ -1,8 +1,7 @@
 # sweep-external-sdk
 
-TypeScript SDK for the [Sweep External API](https://github.com/cryppinfluence/sweep-docs):
-signed backend client, webhook verification and browser wallet execution
-helpers. Zero runtime dependencies.
+TypeScript SDK for the Sweep External API: signed backend client, webhook
+verification and browser wallet execution helpers. Zero runtime dependencies.
 
 ```bash
 npm install sweep-external-sdk
