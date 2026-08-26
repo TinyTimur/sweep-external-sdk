@@ -24,6 +24,20 @@ credentials (`SWEEP_API_URL`, `SWEEP_PARTNER_ID`, `SWEEP_PARTNER_SECRET`).
 The partner secret must never enter a browser or mobile bundle; only
 `/server` accepts it.
 
+There is deliberately no root import — `import ... from 'sweep-external-sdk'`
+fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`. Always pick the entry point for
+the environment the code runs in: the split exists so that secret-touching
+server code cannot end up in a browser bundle by accident.
+
+TypeScript must use `moduleResolution: "bundler"`, `"node16"` or
+`"nodenext"` — the legacy `"node"` (node10) mode cannot resolve subpath
+exports, so imports and their types will not be found.
+
+The snippets below are sketches, not runnable programs: `provider`
+(an EIP-1193 provider), `address`, `quoteRequest`, `prepared`
+(a `PrepareResponse`), `CHAINS`, `rpc`, `store`, `persistAndReport` and
+`onAttemptEvent` stand for objects your application supplies.
+
 ## Backend
 
 ```ts
@@ -42,14 +56,37 @@ const ping = await client.ping()
 // Quote (persist the idempotency key and body BEFORE transmission):
 const key = `quote-${crypto.randomUUID()}`
 const result = await client.quote(quoteRequest, key)
+
 if (!result.reachable) {
-  // Ambiguous outcome: retry the SAME body with the SAME key.
+  // Timeout or network failure — the outcome is UNKNOWN:
+  // retry the SAME body with the SAME idempotency key.
+} else if (!result.ok) {
+  // Sweep answered with an error. result.response is a SweepErrorBody:
+  // `error` is the stable failure family, `code` the stable detail,
+  // `message` (when present) is safe to render.
+  //   401/400 → fix the request or signing; do not blind-retry
+  //   429     → back off per the RateLimit-* headers
+  //   5xx     → retry the SAME body with the SAME key
+  // Full code tables: https://docs.trysweep.finance/errors
+} else {
+  // Typed success body:
+  const quote = result.response // QuoteResponse
 }
 ```
 
 `prepare`, `submitted` and `status` follow the same shape. Every result is a
 discriminated union: `reachable: false` means the outcome is ambiguous and the
-identical request must be retried with the same idempotency key.
+identical request must be retried with the same idempotency key; `reachable:
+true, ok: false` means Sweep definitively rejected the request — the common
+case in production, handled per the tables at
+[docs.trysweep.finance/errors](https://docs.trysweep.finance/errors).
+
+Each HTTP result also carries `debug.signingString` — the canonical string
+that was signed, for comparing against the envelope in the
+[authentication docs](https://docs.trysweep.finance/authentication) when
+debugging 401s. It contains no secret, but it does expose your partner id,
+nonces and request paths — don't dump whole result objects into long-lived
+logs; log identifiers you chose deliberately.
 
 ## Webhooks
 
@@ -76,6 +113,7 @@ import {
   ensureChain,
   signAuthorization,
   executeChainAction,
+  waitForReceipt,
 } from 'sweep-external-sdk/browser'
 
 const walletCapabilities = await readWalletCapabilities(provider, address)
