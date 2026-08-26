@@ -41,7 +41,8 @@
     "build": "tsup",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+    "check:examples": "node --check examples/backend.js && node --check examples/frontend.js",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run check:examples && npm run build"
   },
   "keywords": [
     "sweep",

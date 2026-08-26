@@ -33,10 +33,12 @@ TypeScript must use `moduleResolution: "bundler"`, `"node16"` or
 `"nodenext"` — the legacy `"node"` (node10) mode cannot resolve subpath
 exports, so imports and their types will not be found.
 
-The snippets below are sketches, not runnable programs: `provider`
-(an EIP-1193 provider), `address`, `quoteRequest`, `prepared`
-(a `PrepareResponse`), `CHAINS`, `rpc`, `store`, `persistAndReport` and
-`onAttemptEvent` stand for objects your application supplies.
+The snippets below are sketches: `provider` (an EIP-1193 provider),
+`address`, `quoteRequest`, `prepared` (a `PrepareResponse`), `CHAINS`, `rpc`,
+`store`, `persistAndReport` and `onAttemptEvent` stand for objects your
+application supplies. For complete versions where every identifier is
+defined — a full one-file backend and the whole browser flow — see
+[`examples/`](./examples).
 
 ## Backend
 
